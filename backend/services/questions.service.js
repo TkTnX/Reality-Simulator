@@ -15,9 +15,8 @@ export async function getAccess(req, res) {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
-      RqUID: "019da13c-b7b3-780f-8d26-8fda473c6ffc",
-      Authorization:
-        "Basic MDE5ZGExM2MtYjdiMy03ODBmLThkMjYtOGZkYTQ3M2M2ZmZjOjdiNjc5MGUwLWQxY2YtNDQxMC04NzBiLTZlNzQ2ZjlkZmViNA==",
+      RqUID: process.env.GIGA_CLIENT_ID,
+      Authorization: `Basic ${process.env.GIGA_AUTH_KEY}`,
     },
     data: body,
   };
@@ -28,7 +27,6 @@ export async function getAccess(req, res) {
 
 export async function sendQuestion(req, res) {
   const { accessToken } = req.body;
-  console.log(req.body);
   const giga = new GigaChat({
     credentials: process.env.GIGA_AUTH_KEY,
     scope: process.env.GIGA_SCOPE,
