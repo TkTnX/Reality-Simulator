@@ -1,33 +1,61 @@
-import axios from "axios";
-import { useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback } from "react";
+import {
+  ReactFlow,
+  addEdge,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+} from "@xyflow/react";
 
-const url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth";
-const payload = {
-  scope: "GIGACHAT_API_PERS",
+import "@xyflow/react/dist/style.css";
+
+import {
+  nodes as initialNodes,
+  edges as initialEdges,
+} from "./constants/initial-elements";
+import ResizerNode from "./components/ResizerNode";
+import CircleNode from "./components/CircleNode";
+import TextInputNode from "./components/TextInputNode";
+import AnnotationNode from "./components/AnnotationNode";
+import ButtonEdge from "./components/ButtonEdge";
+
+const nodeTypes = {
+  annotation: AnnotationNode,
+  resizer: ResizerNode,
+  circle: CircleNode,
+  textinput: TextInputNode,
 };
-const headers = {
-  "Content-Type": "application/x-www-form-urlencoded",
-  Accept: "application/json",
-  RqUID: "019da13c-b7b3-780f-8d26-8fda473c6ffc",
-  Authorization:
-    "Basic MDE5ZGExM2MtYjdiMy03ODBmLThkMjYtOGZkYTQ3M2M2ZmZjOjdiNjc5MGUwLWQxY2YtNDQxMC04NzBiLTZlNzQ2ZjlkZmViNA==",
+
+const edgeTypes = {
+  button: ButtonEdge,
 };
 
-function App() {
-  useEffect(() => {
-    const fetchData = async () => {
-      "use server";
-      try {
-        const res = await axios.post(url, payload, { headers });
-        console.log(res.data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+const OverviewFlow = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = useCallback(
+    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    [],
+  );
 
-    fetchData();
-  }, []);
-  return <h1>Hello world!</h1>;
-}
+  return (
+    <ReactFlow
+      className="h-screen"
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      fitView
+      attributionPosition="top-right"
+      nodeTypes={nodeTypes}
+    >
+      <Controls />
+      <Background />
+    </ReactFlow>
+  );
+};
 
-export default App;
+export default OverviewFlow;

@@ -11,7 +11,7 @@ export async function getAccess(req, res) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+    url: process.env.GIGA_URL,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
