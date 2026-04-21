@@ -3,8 +3,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendWishResolver, type SendWishType } from "../resolvers";
 import { useWishes } from "../hooks";
+import type { WishType } from "../types";
 
-export const FormNode = () => {
+interface Props {
+  setWish: (wish: WishType) => void;
+}
+
+export const FormNode = ({ setWish }: Props) => {
   const { sendWishMutation } = useWishes();
   const { mutate, isPending } = sendWishMutation();
   const {
@@ -14,11 +19,11 @@ export const FormNode = () => {
   } = useForm<SendWishType>({
     resolver: zodResolver(sendWishResolver),
   });
-
   const onSubmit = (values: SendWishType) => {
     mutate(values, {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: (data: string) => {
+        const nodes = JSON.parse(data) as WishType;
+        setWish(nodes);
       },
     });
   };

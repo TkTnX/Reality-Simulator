@@ -26,7 +26,7 @@ export async function getAccess(req, res) {
 }
 
 export async function sendQuestion(req, res) {
-  const { accessToken } = req.body;
+  const { accessToken, request } = req.body;
   const giga = new GigaChat({
     credentials: process.env.GIGA_AUTH_KEY,
     scope: process.env.GIGA_SCOPE,
@@ -40,7 +40,7 @@ export async function sendQuestion(req, res) {
           role: "system",
           content: assistantConfig,
         },
-        { role: "user", content: "Я хочу купить машину" },
+        { role: "user", content: request },
       ],
     });
     return res.json(msg.choices[0].message.content);
