@@ -1,14 +1,14 @@
 import { memo } from "react";
 
 interface Props {
-    data: {
-        label: string
-        level: string
-        arrowStyle: Record<string, string >
-    }
+  data: {
+    label: string;
+    level: string;
+    arrowStyle: Record<string, string>;
+  };
 }
 
-function AnnotationNode({ data }: Props) {
+export const AnnotationNode = memo(({ data }: Props) => {
   return (
     <>
       <div className="annotation-content">
@@ -22,6 +22,4 @@ function AnnotationNode({ data }: Props) {
       )}
     </>
   );
-}
-
-export default memo(AnnotationNode);
+});

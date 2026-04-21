@@ -5,7 +5,7 @@ interface Props {
     data: { label: string}
 }
 
-function ResizerNode({ data }: Props) {
+export const ResizerNode = ({ data }: Props) => {
   return (
     <>
       <NodeResizer minWidth={1} minHeight={1} />

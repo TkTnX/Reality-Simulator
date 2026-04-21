@@ -1,11 +1,21 @@
-import { MarkerType } from "@xyflow/react";
+import { Send } from "lucide-react";
 
 export const nodes = [
   {
     id: "1-1",
     type: "input",
     data: {
-      label: "Я хочу купить машину",
+      label: (
+        <div>
+          <h1>Введите ваше желание</h1>
+          <form className="flex items-center gap-1 bg-gray-50">
+            <input type="text" />
+            <button>
+              <Send />
+            </button>
+          </form>
+        </div>
+      ),
     },
     position: { x: 150, y: 0 },
   },
