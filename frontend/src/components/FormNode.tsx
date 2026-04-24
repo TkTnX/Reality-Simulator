@@ -1,9 +1,10 @@
-import { Send } from "lucide-react";
+import { Loader, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendWishResolver, type SendWishType } from "../resolvers";
 import { useWishes } from "../hooks";
 import type { WishType } from "../types";
+import { toast } from "react-toastify";
 
 interface Props {
   setWish: (wish: WishType) => void;
@@ -22,24 +23,34 @@ export const FormNode = ({ setWish }: Props) => {
   const onSubmit = (values: SendWishType) => {
     mutate(values, {
       onSuccess: (data: string) => {
-        const nodes = JSON.parse(data) as WishType;
+        const nodes = JSON.parse(data) as WishType | { error: string };
+
+        if ("error" in nodes) {
+          return toast.error(nodes.error);
+        }
+
         setWish(nodes);
+      },
+      onError: (error) => {
+        console.log(error);
       },
     });
   };
 
   return (
     <div className="w-full">
-      <h1 className="font-black text-2xl">Введите ваше желание</h1>
+      <h1 className="font-black text-2xl">
+        {isPending ? "Думаю..." : "Введите ваше желание"}
+      </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex w-full! mt-3 border border-gray-200 rounded-lg items-center gap-1 bg-gray-50"
+        className={`flex w-full! mt-3 border border-gray-200 rounded-lg items-center gap-1 bg-gray-50 transition duration-700 ${isPending && "opacity-0 -translate-y-4"}`}
       >
         <input
           disabled={isPending}
           {...register("request")}
           placeholder="Я хочу купить машину"
-          className="flex-1 outline-none py-2 px-1"
+          className="input border-none"
           type="text"
         />
         <button
@@ -50,6 +61,12 @@ export const FormNode = ({ setWish }: Props) => {
           <Send size={14} />
         </button>
       </form>
+
+      <div
+        className={`opacity-0 translate-y-4 transition duration-700 flex justify-center ${isPending && "opacity-100 -translate-y-6! "}`}
+      >
+        <Loader className="animate-spin" />
+      </div>
       {errors.request && (
         <p className="text-red-500 mt-2">{errors.request.message}</p>
       )}

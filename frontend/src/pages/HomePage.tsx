@@ -1,19 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Background, Controls, ReactFlow } from "@xyflow/react";
 import { useState } from "react";
-import { ReactFlow, Controls, Background } from "@xyflow/react";
-
+import type { WishType } from "../types";
+import { createEdges, createNodes } from "../helpers";
+import { AnnotationNode, FormNode } from "../components";
+import ResizerNode from "../components/ResizerNode";
+import CircleNode from "../components/CircleNode";
+import TextInputNode from "../components/TextInputNode";
 import "@xyflow/react/dist/style.css";
 
-import CircleNode from "./components/CircleNode";
-import TextInputNode from "./components/TextInputNode";
-
-import {
-  FormNode,
-  AnnotationNode,
-  ResizerNode,
-} from "./components";
-import type { WishType } from "./types";
-import { createEdges, createNodes } from "./helpers";
 const nodeTypes = {
   annotation: AnnotationNode,
   resizer: ResizerNode,
@@ -21,9 +15,9 @@ const nodeTypes = {
   textinput: TextInputNode,
 };
 
-const OverviewFlow = () => {
+export const HomePage = () => {
   const [wish, setWish] = useState<WishType | null>(null);
-  console.log(wish);
+
   return (
     <ReactFlow
       className="h-screen"
@@ -52,5 +46,3 @@ const OverviewFlow = () => {
     </ReactFlow>
   );
 };
-
-export default OverviewFlow;
