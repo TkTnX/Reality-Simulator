@@ -8,6 +8,7 @@ import questionsRouter from "./routes/questions.route.js";
 import authRouter from "./routes/auth.route.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose
   .connect(process.env.DB_URL)

@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
 import {
   loginSchema,
   registerSchema,
+  showErrorMessage,
+  useAuth,
   type LoginSchemaType,
   type RegisterSchemaType,
 } from "../shared";
@@ -10,17 +13,33 @@ import { useState } from "react";
 import { ErrorMessage } from "../shared";
 
 export const AuthForm = () => {
+  const { loginMutation, registerMutation } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const { mutate: login, isPending: loginPending } = loginMutation();
+  const { mutate: registration, isPending: registerPending } =
+    registerMutation();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegisterSchemaType | LoginSchemaType>({
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
   });
 
-  const onSubmit = (values: RegisterSchemaType | LoginSchemaType) => {
-    console.log(values);
+  const onSubmit = async (values: RegisterSchemaType | LoginSchemaType) => {
+    if (isLogin) {
+      login(values, {
+        onSuccess: (token: string) =>
+          Cookies.set("accessToken", token, { expires: 3_600_000 }),
+        onError: (err) => showErrorMessage(err),
+      });
+    } else {
+      registration(values as RegisterSchemaType, {
+        onSuccess: (token: string) =>
+          Cookies.set("accessToken", token, { expires: 3_600_000 }),
+        onError: (err) => showErrorMessage(err),
+      });
+    }
   };
 
   return (
@@ -57,13 +76,16 @@ export const AuthForm = () => {
       />
       {errors.password && <ErrorMessage message={errors.password.message!} />}
 
-      <button className="bg-gray-300 py-3 rounded-full text-gray hover:bg-gray-500 hover:text-white transition">
+      <button
+        disabled={loginPending || registerPending || !isValid}
+        className="bg-gray-300 py-3 rounded-full  hover:bg-gray-500 hover:text-white transition disabled:opacity-50 disabled:hover:bg-gray-300 disabled:hover:text-inherit"
+      >
         {isLogin ? "Войти" : "Зарегистрироваться"}
       </button>
       <div>
         <button
           type="button"
-          className="group text-gray-500"
+          className="group text-gray-500 "
           onClick={() => setIsLogin((prev) => !prev)}
         >
           {!isLogin ? (

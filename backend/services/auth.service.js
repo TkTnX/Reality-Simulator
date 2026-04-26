@@ -1,10 +1,10 @@
 import { User } from "../models/user.model.js";
 import argon from "argon2";
+import jwt from "jsonwebtoken";
 export async function register(req, res) {
   const { name, email, password } = req.body;
 
   const isUserExist = await User.findOne({ email });
-  console.log(isUserExist);
   if (isUserExist) throw new Error("Пользователь уже существует!");
 
   const hashedPassword = await argon.hash(password);
@@ -15,17 +15,40 @@ export async function register(req, res) {
     password: hashedPassword,
   });
 
-  return res.send(user);
+  return setCookies(res, user);
 }
 
 export async function login(req, res) {
   const { email, password } = req.body;
 
   const isUserExists = await User.findOne({ email });
-  if (!isUserExists) throw new Error("Неверные данные или пароль!");
+  if (!isUserExists) res.status(401).send("Неверные почта или пароль!");
 
   const isPasswordCorrect = await argon.verify(isUserExists.password, password);
-  if (!isPasswordCorrect) throw new Error("Неверные данные или пароль!");
+  if (!isPasswordCorrect) throw new Error("Неверные почта или пароль!");
 
-  return res.send(isUserExists);
+  return setCookies(res, isUserExists);
+}
+
+async function generateTokens(user) {
+  const payload = { email: user.email, id: user._id };
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  return { refreshToken, accessToken };
+}
+
+async function setCookies(res, user) {
+  const { accessToken, refreshToken } = await generateTokens(user);
+
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 604800000,
+    httpOnly: true
+  });
+
+  return res.send(accessToken);
 }
