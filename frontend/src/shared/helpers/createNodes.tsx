@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VariantItem } from "../components";
+
+import { VariantItem } from "../../widgets";
 import type { WishType } from "../types";
 
 export const createNodes = (

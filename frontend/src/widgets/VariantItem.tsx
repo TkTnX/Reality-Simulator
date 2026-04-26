@@ -1,4 +1,4 @@
-import { ERisk, type WishType } from "../types";
+import { ERisk, type WishType } from "../shared";
 
 interface Props {
   wish: WishType;

@@ -1,12 +1,12 @@
 import { Background, Controls, ReactFlow } from "@xyflow/react";
 import { useState } from "react";
-import type { WishType } from "../types";
-import { createEdges, createNodes } from "../helpers";
-import { AnnotationNode, FormNode } from "../components";
-import ResizerNode from "../components/ResizerNode";
-import CircleNode from "../components/CircleNode";
-import TextInputNode from "../components/TextInputNode";
 import "@xyflow/react/dist/style.css";
+import { createEdges, createNodes, type WishType } from "../shared";
+import ResizerNode from "../widgets/ResizerNode";
+import { AnnotationNode } from "../widgets";
+import CircleNode from "../widgets/CircleNode";
+import TextInputNode from "../widgets/TextInputNode";
+import { FormNode } from "../features";
 
 const nodeTypes = {
   annotation: AnnotationNode,

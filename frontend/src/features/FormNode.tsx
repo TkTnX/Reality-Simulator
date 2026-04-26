@@ -1,10 +1,9 @@
 import { Loader, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { sendWishResolver, type SendWishType } from "../resolvers";
-import { useWishes } from "../hooks";
-import type { WishType } from "../types";
+import { sendWishResolver, type SendWishType } from "../shared";
 import { toast } from "react-toastify";
+import { useWishes, type WishType } from "../shared";
 
 interface Props {
   setWish: (wish: WishType) => void;

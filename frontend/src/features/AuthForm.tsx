@@ -4,7 +4,7 @@ import {
   registerSchema,
   type LoginSchemaType,
   type RegisterSchemaType,
-} from "../resolvers";
+} from "../shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { ErrorMessage } from "../shared";
