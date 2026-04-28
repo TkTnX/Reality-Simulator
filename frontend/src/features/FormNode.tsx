@@ -22,8 +22,8 @@ export const FormNode = ({ setWish }: Props) => {
   const onSubmit = (values: SendWishType) => {
     mutate(values, {
       onSuccess: (data: string) => {
+        console.log(data);
         const nodes = JSON.parse(data) as WishType | { error: string };
-
         if ("error" in nodes) {
           return toast.error(nodes.error);
         }

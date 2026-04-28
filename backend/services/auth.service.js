@@ -5,7 +5,7 @@ export async function register(req, res) {
   const { name, email, password } = req.body;
 
   const isUserExist = await User.findOne({ email });
-  if (isUserExist) return res.status(401).send("Пользователь уже существует!");;
+  if (isUserExist) return res.status(401).send("Пользователь уже существует!");
 
   const hashedPassword = await argon.hash(password);
 
@@ -25,9 +25,20 @@ export async function login(req, res) {
   if (!isUserExists) return res.status(401).send("Неверные почта или пароль!");
 
   const isPasswordCorrect = await argon.verify(isUserExists.password, password);
-  if (!isPasswordCorrect) return res.status(401).send("Неверные почта или пароль!");
+  if (!isPasswordCorrect)
+    return res.status(401).send("Неверные почта или пароль!");
 
   return setCookies(res, isUserExists);
+}
+
+export async function refreshTokens(req, res) {
+  const { refreshToken } = req.cookies;
+  const payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+  const user = await User.findOne({ email: payload.email });
+  if (!user) return res.status(404).send("Пользователь не найден!");
+
+  return setCookies(res, user);
 }
 
 async function generateTokens(user) {
@@ -44,10 +55,10 @@ async function generateTokens(user) {
 
 async function setCookies(res, user) {
   const { accessToken, refreshToken } = await generateTokens(user);
-
+  
   res.cookie("refreshToken", refreshToken, {
     maxAge: 604800000,
-    httpOnly: true
+    httpOnly: true,
   });
 
   return res.send(accessToken);

@@ -4,7 +4,7 @@ import cors from "cors";
 import axios from "axios";
 import https from "https";
 import GigaChat from "gigachat/index.mjs";
-import questionsRouter from "./routes/questions.route.js";
+import wishRouter from "./routes/wish.route.js";
 import authRouter from "./routes/auth.route.js";
 import usersRouter from "./routes/user.route.js";
 import dotenv from "dotenv";
@@ -28,7 +28,7 @@ mongoose
   .then(() => console.log("Connected successfully to MongoDB"))
   .catch((err) => console.error("Connection Error: ", err));
 
-app.use("/wishes", questionsRouter);
+app.use("/wishes", wishRouter);
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 
