@@ -11,8 +11,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { ErrorMessage } from "../shared";
+import { useNavigate } from "react-router";
 
 export const AuthForm = () => {
+  const navigate = useNavigate();
   const { loginMutation, registerMutation } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const { mutate: login, isPending: loginPending } = loginMutation();
@@ -29,14 +31,20 @@ export const AuthForm = () => {
   const onSubmit = async (values: RegisterSchemaType | LoginSchemaType) => {
     if (isLogin) {
       login(values, {
-        onSuccess: (token: string) =>
-          Cookies.set("accessToken", token, { expires: 3_600_000 }),
+        onSuccess: (token: string) => {
+          Cookies.set("accessToken", token, { expires: 3_600_000 });
+
+          return navigate("/");
+        },
         onError: (err) => showErrorMessage(err),
       });
     } else {
       registration(values as RegisterSchemaType, {
-        onSuccess: (token: string) =>
-          Cookies.set("accessToken", token, { expires: 3_600_000 }),
+        onSuccess: (token: string) => {
+          Cookies.set("accessToken", token, { expires: 3_600_000 });
+
+          return navigate("/");
+        },
         onError: (err) => showErrorMessage(err),
       });
     }

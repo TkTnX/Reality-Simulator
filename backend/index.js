@@ -6,6 +6,7 @@ import https from "https";
 import GigaChat from "gigachat/index.mjs";
 import questionsRouter from "./routes/questions.route.js";
 import authRouter from "./routes/auth.route.js";
+import usersRouter from "./routes/user.route.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
@@ -29,6 +30,7 @@ mongoose
 
 app.use("/wishes", questionsRouter);
 app.use("/auth", authRouter);
+app.use("/users", usersRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

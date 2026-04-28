@@ -17,7 +17,6 @@ const nodeTypes = {
 
 export const HomePage = () => {
   const [wish, setWish] = useState<WishType | null>(null);
-
   return (
     <ReactFlow
       className="h-screen"

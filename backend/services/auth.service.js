@@ -5,7 +5,7 @@ export async function register(req, res) {
   const { name, email, password } = req.body;
 
   const isUserExist = await User.findOne({ email });
-  if (isUserExist) throw new Error("Пользователь уже существует!");
+  if (isUserExist) return res.status(401).send("Пользователь уже существует!");;
 
   const hashedPassword = await argon.hash(password);
 
@@ -22,10 +22,10 @@ export async function login(req, res) {
   const { email, password } = req.body;
 
   const isUserExists = await User.findOne({ email });
-  if (!isUserExists) res.status(401).send("Неверные почта или пароль!");
+  if (!isUserExists) return res.status(401).send("Неверные почта или пароль!");
 
   const isPasswordCorrect = await argon.verify(isUserExists.password, password);
-  if (!isPasswordCorrect) throw new Error("Неверные почта или пароль!");
+  if (!isPasswordCorrect) return res.status(401).send("Неверные почта или пароль!");
 
   return setCookies(res, isUserExists);
 }
