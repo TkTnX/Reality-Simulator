@@ -1,6 +1,7 @@
 export type WishType = {
+    _id?: string
     id: string
-    probability: 1
+    probability: number
     risk: ERisk
     text: string
     children: WishType[]

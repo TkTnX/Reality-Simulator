@@ -4,8 +4,12 @@ import { getUser } from "./user.service.js";
 import axios from "axios";
 import { assistantConfig } from "../shared/constants/assistant-config.js";
 import { gigachatConfig } from "../shared/libs/gigachat-config.js";
+import { User } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export async function createWish(req, res) {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const payload = jwt.verify(accessToken, process.env.JWT_SECRET);
   const { data } = await axios.request(
     gigachatConfig(
       process.env.GIGA_URL,
@@ -19,7 +23,8 @@ export async function createWish(req, res) {
     accessToken: data.accessToken,
   });
   const body = req.body;
-  const user = await getUser(req, res);
+  const user = await User.findById(payload.id);
+  if (!user) return res.status(404).json({ error: "Пользователь не найден" });
 
   try {
     const msg = await giga.chat({
@@ -34,7 +39,8 @@ export async function createWish(req, res) {
 
     const content = msg.choices[0].message.content;
     const contentJSON = JSON.parse(content);
-
+    if (contentJSON.error)
+      return res.status(500).send("Я не понял, что вы имели в виду");
     const wish = await Wish.create({
       probability: contentJSON.probability,
       risk: contentJSON.risk,

@@ -5,6 +5,7 @@ interface Props {
 }
 
 export const VariantItem = ({ wish }: Props) => {
+  console.log(wish);
   return (
     <div className="w-full!">
       <h2 className="font-bold text-base">{wish.text}</h2>

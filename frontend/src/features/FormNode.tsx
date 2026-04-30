@@ -1,8 +1,11 @@
 import { Loader, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { sendWishResolver, type SendWishType } from "../shared";
-import { toast } from "react-toastify";
+import {
+  sendWishResolver,
+  showErrorMessage,
+  type SendWishType,
+} from "../shared";
 import { useWishes, type WishType } from "../shared";
 
 interface Props {
@@ -21,17 +24,11 @@ export const FormNode = ({ setWish }: Props) => {
   });
   const onSubmit = (values: SendWishType) => {
     mutate(values, {
-      onSuccess: (data: string) => {
-        console.log(data);
-        const nodes = JSON.parse(data) as WishType | { error: string };
-        if ("error" in nodes) {
-          return toast.error(nodes.error);
-        }
-
-        setWish(nodes);
+      onSuccess: (data: WishType) => {
+        setWish(data);
       },
       onError: (error) => {
-        console.log(error);
+        return showErrorMessage(error);
       },
     });
   };

@@ -12,8 +12,10 @@ export const createNodes = (
   const width = getTreeWidth(wish);
   const xCenter = startX + width / 2;
 
+  const nodeId = wish._id || wish.id;
+
   nodes.push({
-    id: wish.id,
+    id: nodeId,
     type: level === 0 ? "input" : "default",
     className: "w-50!",
     data: {
@@ -39,11 +41,12 @@ export const createNodes = (
 
 export const createEdges = (wish: WishType): any[] => {
   const edges: any[] = [];
+  const nodeId = wish._id || wish.id;
   if (wish.children && wish.children.length > 0) {
     wish.children.forEach((child) => {
       edges.push({
-        id: `${wish.id}-${child.id}`,
-        source: wish.id,
+        id: `${nodeId}-${child.id}`,
+        source: nodeId,
         target: child.id,
         type: "step",
       });
