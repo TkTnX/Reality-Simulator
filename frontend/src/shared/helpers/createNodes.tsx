@@ -13,7 +13,6 @@ export const createNodes = (
   const xCenter = startX + width / 2;
 
   const nodeId = wish._id || wish.id;
-
   nodes.push({
     id: nodeId,
     type: level === 0 ? "input" : "default",
@@ -24,6 +23,7 @@ export const createNodes = (
     position: { x: xCenter * 250, y: level * 250 },
     sourcePosition: "bottom",
     targetPosition: "top",
+    draggable: false,
   });
 
   let currentX = startX;
@@ -36,6 +36,7 @@ export const createNodes = (
       currentX += childWidth;
     });
   }
+  console.log(nodes);
   return nodes;
 };
 
@@ -57,7 +58,7 @@ export const createEdges = (wish: WishType): any[] => {
   return edges;
 };
 
-const getTreeWidth = (node: WishType) => {
+export const getTreeWidth = (node: WishType) => {
   if (!node.children || node.children.length === 0) return 1;
 
   return node.children.reduce(

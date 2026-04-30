@@ -56,3 +56,13 @@ export async function createWish(req, res) {
     return res.status(500).json({ error: "Ошибка при запросе к ИИ" });
   }
 }
+
+export async function getWishes(req, res) {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const payload = jwt.verify(accessToken, process.env.JWT_SECRET);
+
+  const userWishes = await Wish.find({ user: payload.id });
+  if (!userWishes) return res.send(404).send("Желания пользователя не найдены");
+
+  return res.status(200).json(userWishes);
+}

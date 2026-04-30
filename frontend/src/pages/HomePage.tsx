@@ -1,7 +1,20 @@
-import { Background, Controls, ReactFlow } from "@xyflow/react";
-import { useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import {
+  Background,
+  Controls,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
+import { useEffect, useState } from "react";
 import "@xyflow/react/dist/style.css";
-import { createEdges, createNodes, type WishType } from "../shared";
+import {
+  createEdges,
+  createNodes,
+  getTreeWidth,
+  useWishes,
+  type WishType,
+} from "../shared";
 import ResizerNode from "../widgets/ResizerNode";
 import { AnnotationNode, Header } from "../widgets";
 import CircleNode from "../widgets/CircleNode";
@@ -16,28 +29,73 @@ const nodeTypes = {
 };
 
 export const HomePage = () => {
+  const [wishes, setWishes] = useState<WishType[]>([]);
+  const { getUserWishesQuery } = useWishes();
+  const { data } = getUserWishesQuery();
   const [wish, setWish] = useState<WishType | null>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  useEffect(() => {
+    if (!data) return;
+    setWishes(data);
+  }, [data]);
+
+  useEffect(() => {
+    let totalXOffset = 0;
+
+    const newNodes = [
+      ...(wishes && wishes.length > 0
+        ? wishes.flatMap((wish) => {
+            const nodes = createNodes(wish, 0, 0);
+            const offsetNodes = nodes.map((node) => ({
+              ...node,
+              position: {
+                ...node.position,
+                x: node.position.x + totalXOffset,
+              },
+            }));
+
+            const treeWidth = getTreeWidth(wish) * 250 + 300;
+            totalXOffset += treeWidth;
+
+            return offsetNodes;
+          })
+        : []),
+      ...(wish
+        ? createNodes(wish, 0, 0)
+        : [
+            {
+              id: "form",
+              type: "input",
+              className: "w-100!",
+              data: {
+                label: <FormNode setWish={setWish} />,
+              },
+              position: { x: 150, y: 300 },
+              draggable: true,
+            },
+          ]),
+    ];
+
+    const newEdges = [
+      ...(wishes && wishes.flatMap((wish) => createEdges(wish))),
+      ...(wish ? createEdges(wish) : []),
+    ];
+
+    setNodes(newNodes as never[]);
+    setEdges(newEdges as never[]);
+  }, [wishes, wish, setNodes, setEdges]);
+
   return (
     <>
       <Header />
       <ReactFlow
         className="h-screen"
-        nodes={[
-          ...(wish
-            ? createNodes(wish)
-            : [
-                {
-                  id: "form",
-                  type: "input",
-                  className: "w-100!",
-                  data: {
-                    label: <FormNode setWish={setWish} />,
-                  },
-                  position: { x: 150, y: 300 },
-                },
-              ]),
-        ]}
-        edges={[...(wish ? createEdges(wish) : [])]}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         fitView
         attributionPosition="top-center"
         nodeTypes={nodeTypes}

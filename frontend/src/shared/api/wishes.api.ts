@@ -6,3 +6,8 @@ export async function sendWish(values: SendWishType) {
 
   return data;
 }
+
+export async function getWishes() {
+  const { data } = await axiosInstance.get('/wishes')
+  return data
+}
