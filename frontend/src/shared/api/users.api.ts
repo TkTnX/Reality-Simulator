@@ -1,7 +1,11 @@
 import { axiosInstance } from "../helpers";
 
 export async function getMe() {
-    const { data } = await axiosInstance.get('users/me')
-    
-    return data
+  try {
+    const { data } = await axiosInstance.get("users/me");
+    return data;
+  } catch (error) {
+    console.log(error);
+    return { error: "Ошибка при получении пользователя!" };
+  }
 }

@@ -6,6 +6,7 @@ import { assistantConfig } from "../shared/constants/assistant-config.js";
 import { gigachatConfig } from "../shared/libs/gigachat-config.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { processNode } from "../shared/helpers/generateUniqueId.js";
 
 export async function createWish(req, res) {
   const accessToken = req.headers.authorization.split(" ")[1];
@@ -39,8 +40,12 @@ export async function createWish(req, res) {
 
     const content = msg.choices[0].message.content;
     const contentJSON = JSON.parse(content);
+
     if (contentJSON.error)
       return res.status(500).send("Я не понял, что вы имели в виду");
+
+    processNode(contentJSON);
+
     const wish = await Wish.create({
       probability: contentJSON.probability,
       risk: contentJSON.risk,
@@ -65,4 +70,18 @@ export async function getWishes(req, res) {
   if (!userWishes) return res.send(404).send("Желания пользователя не найдены");
 
   return res.status(200).json(userWishes);
+}
+
+export async function deleteWish(req, res) {
+  try {
+    const { id } = req.params;
+    const wish = await Wish.findById(id);
+    if (!wish) return res.send(404).send("Желание не найдено!");
+
+    await Wish.deleteOne({ _id: id });
+    return res.status(201).json({ ok: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Не удалось удалить желание!");
+  }
 }

@@ -3,7 +3,6 @@ import qs from "qs";
 let body = qs.stringify({
   scope: "GIGACHAT_API_PERS",
 });
-console.log(process.env.GIGA_URL);
 
 export const gigachatConfig = (url, clientId, authKey) => ({
   method: "post",

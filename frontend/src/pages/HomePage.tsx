@@ -28,6 +28,8 @@ const nodeTypes = {
   textinput: TextInputNode,
 };
 
+// TODO: ФОРМА НЕ ИСЧЕЗАЕТ ПОСЛЕ СОЗДАНИЯ
+
 export const HomePage = () => {
   const [wishes, setWishes] = useState<WishType[]>([]);
   const { getUserWishesQuery } = useWishes();
@@ -40,7 +42,6 @@ export const HomePage = () => {
     if (!data) return;
     setWishes(data);
   }, [data]);
-
   useEffect(() => {
     let totalXOffset = 0;
 
@@ -63,7 +64,7 @@ export const HomePage = () => {
           })
         : []),
       ...(wish
-        ? createNodes(wish, 0, 0)
+        ? createNodes(wish, 0, -10)
         : [
             {
               id: "form",
@@ -72,7 +73,7 @@ export const HomePage = () => {
               data: {
                 label: <FormNode setWish={setWish} />,
               },
-              position: { x: 150, y: 300 },
+              position: { x: -700, y: 300 },
               draggable: true,
             },
           ]),

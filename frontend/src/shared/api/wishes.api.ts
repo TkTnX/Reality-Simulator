@@ -7,6 +7,11 @@ export async function sendWish(values: SendWishType) {
   return data;
 }
 
+export async function deleteWish(id: string) {
+  const { data } = await axiosInstance.delete(`/wishes/${id}`);
+  return data
+}
+
 export async function getWishes() {
   const { data } = await axiosInstance.get('/wishes')
   return data

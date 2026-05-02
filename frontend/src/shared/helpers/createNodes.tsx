@@ -36,7 +36,6 @@ export const createNodes = (
       currentX += childWidth;
     });
   }
-  console.log(nodes);
   return nodes;
 };
 

@@ -1,4 +1,5 @@
 import { ERisk, type WishType } from "../shared";
+import { DeleteWishButton } from "../features";
 
 interface Props {
   wish: WishType;
@@ -7,6 +8,7 @@ interface Props {
 export const VariantItem = ({ wish }: Props) => {
   return (
     <div className="w-full!">
+      {wish._id && <DeleteWishButton id={wish._id} />}
       <h2 className="font-bold text-base">{wish.text}</h2>
       <div className="flex items-center flex-col justify-center">
         <span
