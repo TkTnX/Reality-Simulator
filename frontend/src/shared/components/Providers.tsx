@@ -38,7 +38,6 @@ export const Providers = () => {
     </>
   );
 };
-// TODO: ФИКС АВТОРИЗАЦИИ (REFRESHTOKENS И MIDDLEWARE НА БЕКЕ)
 
 async function authLoader() {
   const token = Cookies.get("accessToken");
@@ -57,5 +56,3 @@ async function authorizedLoader() {
 
   return null;
 }
-
-// TODO: Добавление ответов в бд

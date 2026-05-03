@@ -3,7 +3,6 @@ import { refreshTokens } from "../services/auth.service.js";
 export async function verifyAuth(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
-
     if (!authHeader) {
       return res.status(401).json({ error: "Токен отсутсвует" });
     }

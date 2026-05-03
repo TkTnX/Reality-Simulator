@@ -63,8 +63,8 @@ export async function createWish(req, res) {
 }
 
 export async function getWishes(req, res) {
-  const accessToken = req.headers.authorization.split(" ")[1];
-  const payload = jwt.verify(accessToken, process.env.JWT_SECRET);
+  const payload = req.user;
+  console.log(payload);
 
   const userWishes = await Wish.find({ user: payload.id });
   if (!userWishes) return res.send(404).send("Желания пользователя не найдены");

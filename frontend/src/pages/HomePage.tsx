@@ -28,8 +28,6 @@ const nodeTypes = {
   textinput: TextInputNode,
 };
 
-// TODO: ФОРМА НЕ ИСЧЕЗАЕТ ПОСЛЕ СОЗДАНИЯ
-
 export const HomePage = () => {
   const [wishes, setWishes] = useState<WishType[]>([]);
   const { getUserWishesQuery } = useWishes();

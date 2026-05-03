@@ -3,8 +3,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { SendWishType } from "../resolvers";
 import { deleteWish, getWishes, sendWish } from "../api";
 import type { WishType } from "../types";
+import { useUsersStore } from "../stores";
 
 export function useWishes() {
+  const { user } = useUsersStore();
   const sendWishMutation = () =>
     useMutation({
       mutationKey: ["send wish"],
@@ -21,6 +23,7 @@ export function useWishes() {
     useQuery({
       queryKey: ["get wishes"],
       queryFn: (): Promise<WishType[]> => getWishes(),
+      enabled: !!user,
     });
 
   return {

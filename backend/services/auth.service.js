@@ -55,7 +55,7 @@ async function generateTokens(user) {
 
 async function setCookies(res, user) {
   const { accessToken, refreshToken } = await generateTokens(user);
-  
+
   res.cookie("refreshToken", refreshToken, {
     maxAge: 604800000,
     httpOnly: true,
