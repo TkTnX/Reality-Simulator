@@ -35,7 +35,6 @@ export const HomePage = () => {
   const [wish, setWish] = useState<WishType | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
   useEffect(() => {
     if (!data) return;
     setWishes(data);
