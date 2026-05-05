@@ -11,6 +11,7 @@ import "@xyflow/react/dist/style.css";
 import {
   createEdges,
   createNodes,
+  EThemes,
   getTreeWidth,
   useWishes,
   type WishType,
@@ -20,6 +21,7 @@ import { AnnotationNode, Header } from "../widgets";
 import CircleNode from "../widgets/CircleNode";
 import TextInputNode from "../widgets/TextInputNode";
 import { FormNode } from "../features";
+import { useThemeStore } from "../shared/stores";
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -29,6 +31,8 @@ const nodeTypes = {
 };
 
 export const HomePage = () => {
+  const { theme } = useThemeStore();
+
   const [wishes, setWishes] = useState<WishType[]>([]);
   const { getUserWishesQuery } = useWishes();
   const { data } = getUserWishesQuery();
@@ -89,6 +93,7 @@ export const HomePage = () => {
     <>
       <Header />
       <ReactFlow
+        colorMode={theme === EThemes.dark ? "dark" : "light"}
         className="h-screen"
         nodes={nodes}
         edges={edges}

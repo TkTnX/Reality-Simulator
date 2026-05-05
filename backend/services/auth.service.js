@@ -63,3 +63,10 @@ async function setCookies(res, user) {
 
   return res.send(accessToken);
 }
+
+export async function logout(req, res) {
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
+
+  return res.status(201).send("Успешный выход из аккаунта!");
+}

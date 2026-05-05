@@ -18,3 +18,8 @@ export async function refreshTokens() {
   Cookies.set("accessToken", data);
   return data;
 }
+
+export async function logout() {
+  const { data } = await axiosInstance.post("auth/logout");
+  return data;
+}

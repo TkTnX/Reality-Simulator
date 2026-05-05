@@ -1,3 +1,5 @@
 export * from './AuthForm'
 export * from './FormNode'
 export * from './DeleteWishButton'
+export * from './LogoutButton'
+export * from './ThemeButton'
