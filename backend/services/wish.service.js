@@ -7,10 +7,10 @@ import { gigachatConfig } from "../shared/libs/gigachat-config.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { processNode } from "../shared/helpers/generateUniqueId.js";
+import { updateNode } from "../shared/helpers/developNode.js";
 
 export async function createWish(req, res) {
-  const accessToken = req.headers.authorization.split(" ")[1];
-  const payload = jwt.verify(accessToken, process.env.JWT_SECRET);
+  const payload = req.user;
   const { data } = await axios.request(
     gigachatConfig(
       process.env.GIGA_URL,
@@ -62,9 +62,78 @@ export async function createWish(req, res) {
   }
 }
 
+export async function developAuth(req, res) {
+  const payload = req.user;
+
+  const { data } = await axios.request(
+    gigachatConfig(
+      process.env.GIGA_URL,
+      process.env.GIGA_CLIENT_ID,
+      process.env.GIGA_AUTH_KEY,
+    ),
+  );
+  const giga = new GigaChat({
+    credentials: process.env.GIGA_AUTH_KEY,
+    scope: process.env.GIGA_SCOPE,
+    accessToken: data.accessToken,
+  });
+  const body = JSON.stringify(req.body);
+  const user = await User.findById(payload.id);
+  if (!user) return res.status(404).json({ error: "Пользователь не найден" });
+
+  const prompt = `
+РЕЖИМ: expand_node
+
+Развить следующий узел:
+
+${body}
+
+ВАЖНО:
+- Не создавай root
+- Верни только children
+`;
+
+  try {
+    const msg = await giga.chat({
+      messages: [
+        {
+          role: "system",
+          content: assistantConfig,
+        },
+        { role: "user", content: prompt },
+      ],
+    });
+
+    const content = msg.choices[0].message.content;
+    const contentJSON = JSON.parse(content);
+
+    if (contentJSON.error)
+      return res.status(500).send("Я не понял, что вы имели в виду");
+    processNode({ children: contentJSON.children });
+    
+    const wish = await Wish.findById(req.body.rootId);
+
+    if (!wish) return res.status(404).send("Не удалось найти желание");
+
+    wish.children = updateNode(
+      {
+        children: wish.children,
+      },
+      req.body.id,
+      contentJSON.children,
+    ).children;
+
+    await wish.save();
+
+    return res.status(201).json(contentJSON);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Ошибка при запросе к ИИ" });
+  }
+}
+
 export async function getWishes(req, res) {
   const payload = req.user;
-  console.log(payload);
 
   const userWishes = await Wish.find({ user: payload.id });
   if (!userWishes) return res.send(404).send("Желания пользователя не найдены");

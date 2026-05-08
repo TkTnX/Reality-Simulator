@@ -8,6 +8,7 @@ export type WishType = {
     children: WishType[]
 }
 
+
 export enum ERisk {
     LOW = "низкий",
     MEDIUM = "средний",

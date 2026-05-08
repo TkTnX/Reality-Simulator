@@ -32,7 +32,6 @@ const nodeTypes = {
 
 export const HomePage = () => {
   const { theme } = useThemeStore();
-
   const [wishes, setWishes] = useState<WishType[]>([]);
   const { getUserWishesQuery } = useWishes();
   const { data } = getUserWishesQuery();

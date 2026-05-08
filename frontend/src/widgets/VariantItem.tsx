@@ -1,17 +1,19 @@
-import { ERisk, type WishType } from "../shared";
 import { DeleteWishButton } from "../features";
+import { DevelopWishButton } from "../features/DevelopWishButton";
+import { ERisk, type WishType } from "../shared";
 import { useWishesStore } from "../shared/stores";
 
 interface Props {
   wish: WishType;
+  rootId?: string;
 }
 
-export const VariantItem = ({ wish }: Props) => {
+export const VariantItem = ({ wish, rootId }: Props) => {
   const { sellectedWishId, setSellectedWishId } = useWishesStore();
   return (
     <div
       onClick={() => setSellectedWishId(wish.id || null)}
-      className="w-full!"
+      className="w-full! group"
     >
       {wish._id && <DeleteWishButton id={wish._id} />}
       <h2 className="font-bold text-base">{wish.text}</h2>
@@ -31,7 +33,12 @@ export const VariantItem = ({ wish }: Props) => {
         {wish.description}
       </p>
       {!(sellectedWishId === wish.id) && !wish._id && (
-        <p className="text-[8px] text-gray-500">Подробнее</p>
+        <p className="text-[8px] text-gray-500 group-hover:opacity-80">
+          Подробнее
+        </p>
+      )}
+      {sellectedWishId === wish.id && !wish.children?.length && (
+        <DevelopWishButton rootId={rootId} wish={wish} />
       )}
     </div>
   );

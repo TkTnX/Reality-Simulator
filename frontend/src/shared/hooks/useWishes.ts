@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { SendWishType } from "../resolvers";
-import { deleteWish, getWishes, sendWish } from "../api";
+import { deleteWish, developWish, getWishes, sendWish } from "../api";
 import type { WishType } from "../types";
 import { useUsersStore } from "../stores";
 
@@ -11,6 +11,12 @@ export function useWishes() {
     useMutation({
       mutationKey: ["send wish"],
       mutationFn: (values: SendWishType) => sendWish(values),
+    });
+  
+  const developWishMutation = () =>
+    useMutation({
+      mutationKey: ["develop wish"],
+      mutationFn: (values: WishType & {rootId?: string}) => developWish(values),
     });
 
   const deleteWishMutation = () =>
@@ -30,5 +36,6 @@ export function useWishes() {
     sendWishMutation,
     deleteWishMutation,
     getUserWishesQuery,
+    developWishMutation
   };
 }

@@ -7,18 +7,19 @@ export const createNodes = (
   wish: WishType,
   level: number = 0,
   startX: number = 0,
+  rootId?: string,
 ): any[] => {
   const nodes = [];
   const width = getTreeWidth(wish);
   const xCenter = startX + width / 2;
-
+  const actualRootId = rootId || wish._id;
   const nodeId = wish._id || wish.id;
   nodes.push({
     id: nodeId,
     type: level === 0 ? "input" : "default",
     className: "w-50!",
     data: {
-      label: <VariantItem wish={wish} />,
+      label: <VariantItem rootId={actualRootId} wish={wish} />,
     },
     position: { x: xCenter * 250, y: level * 250 },
     sourcePosition: "bottom",
@@ -31,7 +32,7 @@ export const createNodes = (
   if (wish.children) {
     wish.children.forEach((child) => {
       const childWidth = getTreeWidth(child);
-      nodes.push(...createNodes(child, level + 1, currentX));
+      nodes.push(...createNodes(child, level + 1, currentX, actualRootId));
 
       currentX += childWidth;
     });
