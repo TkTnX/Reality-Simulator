@@ -18,7 +18,7 @@ export const LogoutButton = () => {
     <button
       disabled={isPending}
       onClick={onClick}
-      className="w-full rounded-lg hover:bg-gray-400/30 text-center bg-gray-100 transition py-1 px-3 disabled:opacity-50 disabled:pointer-events-none"
+      className="w-full rounded-lg hover:bg-gray-400/30 text-center bg-gray-100 dark:text-black transition py-1 px-3 disabled:opacity-50 disabled:pointer-events-none"
     >
       Выйти
     </button>

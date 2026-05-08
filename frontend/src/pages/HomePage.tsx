@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import {
   Background,
+  BackgroundVariant,
   Controls,
   ReactFlow,
   useEdgesState,
@@ -103,7 +104,11 @@ export const HomePage = () => {
         nodeTypes={nodeTypes}
       >
         <Controls />
-        <Background />
+        <Background
+          bgColor={theme === EThemes.dark ? "black" : "white"}
+          color={theme === EThemes.dark ? "white" : "black"}
+          variant={BackgroundVariant.Dots}
+        />
       </ReactFlow>
     </>
   );

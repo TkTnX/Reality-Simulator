@@ -1,6 +1,8 @@
 @import url("./xy-theme.css");
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 #root {
   height: 100vh;
 }

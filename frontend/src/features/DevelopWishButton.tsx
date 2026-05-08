@@ -19,7 +19,7 @@ export const DevelopWishButton = ({ wish, rootId }: Props) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["get wishes"] });
-          toast.success("Узел дополнен!")
+          toast.success("Узел дополнен!");
         },
       },
     );
@@ -28,7 +28,7 @@ export const DevelopWishButton = ({ wish, rootId }: Props) => {
     <button
       onClick={onClick}
       disabled={isPending}
-      className="bg-blue-100 w-full mt-2 py-2 flex items-center justify-center rounded-full hover:bg-blue-500 transition hover:text-white"
+      className="bg-blue-100 dark:bg-gray-400 w-full mt-2 py-2 flex items-center justify-center rounded-full hover:bg-blue-500 dark:hover:bg-gray-500 transition hover:text-white"
     >
       {isPending ? <Loader className="animate-spin" /> : " Развить идею"}
     </button>
